@@ -35,6 +35,7 @@ class Parser:
     def expression(self):
 
         self.parse_tree = self.term()
+        print(self.current_token)
 
         while (self.current_token.value == '+' or self.current_token.value == '-'):
             operation = self.current_token.value

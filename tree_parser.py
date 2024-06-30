@@ -1,14 +1,15 @@
 from tokens import Token
+from collections import deque
 
 
 class Node:
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, parent):
+        self.parent = parent
         self.left = None
         self.right = None
 
     def __repr__(self):
-        return str(self.value)
+        return str(self.parent)
 
 
 class BinaryTree:
@@ -17,18 +18,26 @@ class BinaryTree:
             return
         self.root = Node(root)
 
-    def post_order_traversal(self, start: Node):
+    @staticmethod
+    def post_order_traversal(start: Node):
         result = []
 
         if (start.left):
-            result.extend(self.post_order_traversal(start.left))
+            result.extend(BinaryTree.post_order_traversal(start.left))
 
         if (start.right):
-            result.extend(self.post_order_traversal(start.right))
+            result.extend(BinaryTree.post_order_traversal(start.right))
 
         result.append(start)
 
-        return result
+        return deque(result)
+
+    @staticmethod
+    def printTree(node, level=0):
+        if node != None:
+            BinaryTree.printTree(node.left, level + 1)
+            print(' ' * 4 * level + '-> ' + str(node.parent))
+            BinaryTree.printTree(node.right, level + 1)
 
 
 class TreeParser:
@@ -42,71 +51,50 @@ class TreeParser:
         if (self.index < len(self.tokens)):
             self.current_token = self.tokens[self.index]
 
+    def factor(self) -> Node:
+        if (self.current_token.term_type == 'integer' or self.current_token.term_type == 'float'):
+            return Node(self.current_token)
+        elif (self.current_token.value == '('):
+            self.move()
+            return self.expression_tree()
+
     def term_tree(self) -> Node:
-        if (self.index + 1 >= len(self.tokens)):
-            return Node(self.current_token)
+        term_tree = self.factor()
+        self.move()
 
-        next_token = self.tokens[self.index + 1]
+        while (self.current_token.value == '*' or self.current_token.value == '/'):
+            left_node = term_tree
 
-        if not (next_token.value == '*' or next_token.value == '/'):
-            return Node(self.current_token)
+            operation = Node(self.current_token)
 
-        term_tree = None
-
-        while (next_token.value == '*' or next_token.value == '/'):
-            if (term_tree is not None):
-                left_node = term_tree
-            else:
-                left_node = Node(self.tokens[self.index])
             self.move()
-
-            operation = Node(self.tokens[self.index])
-            self.move()
-
-            right_node = Node(self.tokens[self.index])
+            right_node = self.factor()
 
             term_tree = operation
             term_tree.left = left_node
             term_tree.right = right_node
 
-            if (self.index + 1 >= len(self.tokens)):
-                break
-
-            next_token = self.tokens[self.index + 1]
+            self.move()
 
         return term_tree
 
-    def expression_tree(self) -> BinaryTree:
-        expression_node_tree = self.term_tree()
-
-        if (self.index + 1 >= len(self.tokens)):
-            expression_tree = BinaryTree()
-            expression_tree.root = expression_node_tree
-            return expression_tree
-
-        next_token = self.tokens[self.index + 1]
-
-        while (next_token.value == '+' or next_token.value == '-'):
-            left_node = expression_node_tree
-            self.move()
+    def expression_tree(self) -> Node:
+        expression_tree = self.term_tree()
+        while (self.current_token.value == '+' or self.current_token.value == '-'):
+            left_node = expression_tree
 
             operation = Node(self.current_token)
             self.move()
 
             right_node = self.term_tree()
 
-            expression_node_tree = operation
-            expression_node_tree.left = left_node
-            expression_node_tree.right = right_node
+            expression_tree = operation
+            expression_tree.left = left_node
+            expression_tree.right = right_node
 
-            if (self.index + 1 >= len(self.tokens)):
-                break
-
-            next_token = self.tokens[self.index + 1]
-
-        expression_tree = BinaryTree()
-        expression_tree.root = expression_node_tree
         return expression_tree
 
     def parse(self):
-        return self.expression_tree()
+        output_tree = BinaryTree()
+        output_tree.root = self.expression_tree()
+        return output_tree

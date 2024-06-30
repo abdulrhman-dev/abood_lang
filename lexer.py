@@ -11,7 +11,7 @@ class Lexer:
     def tokenize(self) -> list[Token]:
         integerRegex = r'(?<!\.)\d+(?!\.)'
         floatRegex = r'\d+\.\d*'
-        operationRegex = r'[+*\-]'
+        operationRegex = r'[\(\)+*/-]'
 
         self.extract(re.finditer(
             integerRegex, self.exp), Integer)

@@ -1,14 +1,15 @@
 from lexer import Lexer
-from tree_parser import TreeParser
+from tree_parser import TreeParser, BinaryTree
 
+# while True:
 print("Initilized abood-lang...")
 
 # exp = input('>')
-lexer = Lexer('2 * 3 + 5* 4')
+lexer = Lexer('(5+3*2)*((3+5)*7 + 6)*3+5*6-3')
 tokens = lexer.tokenize()
-# parseTree = Parser(tokens)
-# parseTree.parse()
-# print(tokens)
-
+print(tokens)
 new_parser = TreeParser(tokens)
-new_parser.parse()
+
+expressions_tree = new_parser.parse()
+print(BinaryTree.post_order_traversal(expressions_tree.root))
+BinaryTree.printTree(expressions_tree.root)

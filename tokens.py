@@ -22,3 +22,14 @@ class Float(Token):
 class Operation(Token):
     def __init__(self, value, start_index, end_index):
         super().__init__(value, 'operation', start_index, end_index)
+
+    def execute(self, num1, num2):
+        match self.value:
+            case '+':
+                return num1 + num2
+            case '-':
+                return num1 - num2
+            case '*':
+                return num1 * num2
+            case '/':
+                return num1 / num2
