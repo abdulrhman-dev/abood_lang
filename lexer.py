@@ -9,17 +9,24 @@ class Lexer:
         self.exp = exp
 
     def tokenize(self) -> list[Token]:
-        integerRegex = r'(?<!\.)\d+(?!\.)'
-        floatRegex = r'\d+\.\d*'
-        operationRegex = r'[\(\)+*/-]'
+        declrations = ['store']
+
+        integer_regex = r'(?<!\.)\d+(?!\.)'
+        float_regex = r'\d+\.\d*'
+        operationRegex = r'[\(\)+*/-=]'
+        declrationRegex = f'({'|'.join(declrations)})'
+        wordsRegex = fr'(?!{'|'.join(declrations)})\b[a-zA-Z]\w+\b'
 
         self.extract(re.finditer(
-            integerRegex, self.exp), Integer)
+            integer_regex, self.exp), Integer)
         self.extract(re.finditer(
-            floatRegex, self.exp), Float)
+            float_regex, self.exp), Float)
         self.extract(re.finditer(
             operationRegex, self.exp), Operation)
-
+        self.extract(re.finditer(
+            declrationRegex, self.exp), Declaration)
+        self.extract(re.finditer(
+            wordsRegex, self.exp), Variable)
         self.tokens = sorted(self.tokens, key=lambda t: t.start_index)
 
         return self.tokens

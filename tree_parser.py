@@ -3,13 +3,13 @@ from collections import deque
 
 
 class Node:
-    def __init__(self, parent):
-        self.parent = parent
+    def __init__(self, value):
+        self.value = value
         self.left = None
         self.right = None
 
     def __repr__(self):
-        return str(self.parent)
+        return str(self.value)
 
 
 class BinaryTree:
@@ -28,7 +28,7 @@ class BinaryTree:
         if (start.right):
             result.extend(BinaryTree.post_order_traversal(start.right))
 
-        result.append(start)
+        result.append(start.value)
 
         return deque(result)
 
@@ -36,7 +36,7 @@ class BinaryTree:
     def printTree(node, level=0):
         if node != None:
             BinaryTree.printTree(node.left, level + 1)
-            print(' ' * 4 * level + '-> ' + str(node.parent))
+            print(' ' * 4 * level + '-> ' + str(node.value))
             BinaryTree.printTree(node.right, level + 1)
 
 

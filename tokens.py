@@ -10,12 +10,12 @@ class Token:
 
 
 class Integer(Token):
-    def __init__(self, value, start_index, end_index):
+    def __init__(self, value, start_index=None, end_index=None):
         super().__init__(int(value), 'integer', start_index, end_index)
 
 
 class Float(Token):
-    def __init__(self, value, start_index, end_index):
+    def __init__(self, value, start_index=None, end_index=None):
         super().__init__(float(value), 'float', start_index, end_index)
 
 
@@ -33,3 +33,13 @@ class Operation(Token):
                 return num1 * num2
             case '/':
                 return num1 / num2
+
+
+class Variable(Token):
+    def __init__(self, value, start_index=None, end_index=None):
+        super().__init__(value, 'variable', start_index, end_index)
+
+
+class Declaration(Token):
+    def __init__(self, value, start_index=None, end_index=None):
+        super().__init__(value, 'declaration', start_index, end_index)
