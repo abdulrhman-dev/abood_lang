@@ -1,39 +1,53 @@
 from tree_parser import Node, BinaryTree
 from tokens import Integer, Float
 from collections import deque
+from data import Data
 
 
-def interpret(tree: Node):
-    expressions: list[Node] = BinaryTree.post_order_traversal(tree)
+class Interpreter:
+    def __init__(self, tree: Node, memory: Data) -> None:
+        self.tree = tree
+        self.expressions: deque[Node] = None
+        self.memory = memory
 
-    if (len(expressions) < 3):
-        return expressions[0]
-    while (len(expressions) > 1):
-        expressions = excute(expressions)
+    def interpret(self):
+        if (self.tree.node.value == '='):
+            self.memory.assign(
+                self.tree.left.node, self.tree.right)
+            return
 
-    return expressions[0].value
+        return self.evaluate_expression(self.tree)
 
+    def evaluate_expression(self, working_tree):
+        self.expressions = BinaryTree.post_order_traversal(working_tree)
 
-def excute(expressions: deque):
-    if (expressions[2].term_type != 'operation'):
-        left_node = expressions.popleft()
-        expressions = excute(expressions)
-        expressions.appendleft(left_node)
-    else:
-        num1 = expressions[0]
-        num2 = expressions[1]
-        operation: Node = expressions[2]
+        if (len(self.expressions) < 3):
+            return self.memory.display(self.expressions[0].value, self.memory)
+        while (len(self.expressions) > 1):
+            self.expressions = self.excute_expression()
 
-        expressions.popleft()
-        expressions.popleft()
-        expressions.popleft()
+        return self.expressions[0].value
 
-        result = operation.execute(num1.value, num2.value)
-        if (result.is_integer()):
-            result = Integer(result)
+    def excute_expression(self):
+        if (self.expressions[2].type != 'operation'):
+            left_node = self.expressions.popleft()
+            self.expressions = self.excute_expression()
+            self.expressions.appendleft(left_node)
         else:
-            result = Float(result)
+            num1 = self.memory.display(self.expressions[0].value, self.memory)
+            num2 = self.memory.display(self.expressions[1].value, self.memory)
+            operation: Node = self.expressions[2]
 
-        expressions.appendleft(result)
+            self.expressions.popleft()
+            self.expressions.popleft()
+            self.expressions.popleft()
 
-    return expressions
+            result = operation.execute(num1, num2)
+            if (result.is_integer()):
+                result = Integer(result)
+            else:
+                result = Float(result)
+
+            self.expressions.appendleft(result)
+
+        return self.expressions

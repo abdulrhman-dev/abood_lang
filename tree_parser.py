@@ -4,12 +4,12 @@ from collections import deque
 
 class Node:
     def __init__(self, value):
-        self.value = value
+        self.node = value
         self.left = None
         self.right = None
 
     def __repr__(self):
-        return str(self.value)
+        return str(self.node)
 
 
 class BinaryTree:
@@ -28,7 +28,7 @@ class BinaryTree:
         if (start.right):
             result.extend(BinaryTree.post_order_traversal(start.right))
 
-        result.append(start.value)
+        result.append(start.node)
 
         return deque(result)
 
@@ -36,7 +36,7 @@ class BinaryTree:
     def printTree(node, level=0):
         if node != None:
             BinaryTree.printTree(node.left, level + 1)
-            print(' ' * 4 * level + '-> ' + str(node.value))
+            print(' ' * 4 * level + '-> ' + str(node.node))
             BinaryTree.printTree(node.right, level + 1)
 
 
@@ -52,7 +52,9 @@ class TreeParser:
             self.current_token = self.tokens[self.index]
 
     def factor(self) -> Node:
-        if (self.current_token.term_type == 'integer' or self.current_token.term_type == 'float'):
+        if (self.current_token.type == 'integer' or self.current_token.type == 'float'):
+            return Node(self.current_token)
+        elif (self.current_token.type == 'variable'):
             return Node(self.current_token)
         elif (self.current_token.value == '('):
             self.move()
@@ -94,7 +96,24 @@ class TreeParser:
 
         return expression_tree
 
+    def statement(self):
+        expression_types = ['integer', 'float', 'operation', 'variable']
+
+        if (self.current_token.type == 'declaration'):
+            self.move()
+            variable_name = self.current_token
+            self.move()
+
+            if (self.current_token.value == '='):
+                statement_tree = Node(self.current_token)
+                statement_tree.left = Node(variable_name)
+                self.move()
+
+                statement_tree.right = self.expression_tree()
+
+                return statement_tree
+        elif self.current_token.type in expression_types:
+            return self.expression_tree()
+
     def parse(self):
-        output_tree = BinaryTree()
-        output_tree.root = self.expression_tree()
-        return output_tree
+        return self.statement()

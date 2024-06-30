@@ -15,7 +15,7 @@ class Parser:
             self.current_token = self.tokens[self.index]
 
     def factor(self):
-        if (self.current_token.term_type == 'integer' or self.current_token.term_type == 'float'):
+        if (self.current_token.type == 'integer' or self.current_token.type == 'float'):
             return self.current_token
 
     def term(self):
@@ -35,7 +35,6 @@ class Parser:
     def expression(self):
 
         self.parse_tree = self.term()
-        print(self.current_token)
 
         while (self.current_token.value == '+' or self.current_token.value == '-'):
             operation = self.current_token.value

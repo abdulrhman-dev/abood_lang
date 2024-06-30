@@ -1,12 +1,13 @@
 class Token:
-    def __init__(self, value, term_type, start_index, end_index):
+    def __init__(self, value, type, start_index, end_index):
         self.value = value
-        self.term_type = term_type
+        self.type = type
         self.start_index = start_index
         self.end_index = end_index
 
     def __repr__(self) -> str:
-        return str(self.value)
+        # return f'{str(self.value)}'
+        return f'{str(self.value)}->{str(self.type)}'
 
 
 class Integer(Token):
