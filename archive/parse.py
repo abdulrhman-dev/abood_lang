@@ -1,4 +1,4 @@
-from lexer import Token
+from tokens import Token
 
 
 class Parser:
@@ -47,6 +47,4 @@ class Parser:
             self.parse_tree = [left_node, operation, right_node]
 
     def parse(self):
-
-        self.expression()
-        print(self.parse_tree)
+        return self.expression

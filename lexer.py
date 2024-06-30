@@ -1,31 +1,6 @@
 import re
 from collections.abc import Iterable
-
-
-class Token:
-    def __init__(self, value, term_type, start_index, end_index):
-        self.value = value
-        self.term_type = term_type
-        self.start_index = start_index
-        self.end_index = end_index
-
-    def __repr__(self) -> str:
-        return str(self.value)
-
-
-class Integer(Token):
-    def __init__(self, value, start_index, end_index):
-        super().__init__(int(value), 'integer', start_index, end_index)
-
-
-class Float(Token):
-    def __init__(self, value, start_index, end_index):
-        super().__init__(float(value), 'float', start_index, end_index)
-
-
-class Operation(Token):
-    def __init__(self, value, start_index, end_index):
-        super().__init__(value, 'operation', start_index, end_index)
+from tokens import *
 
 
 class Lexer:
@@ -54,6 +29,3 @@ class Lexer:
             value = match.string[match.start():match.end()]
 
             self.tokens.append(TermType(value, match.start(), match.end()))
-
-
-lex = Lexer('52+3 * 4.4 + 22 * 44 + 26')
