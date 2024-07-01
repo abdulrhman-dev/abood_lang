@@ -9,17 +9,18 @@ class Lexer:
         self.exp = exp
 
     def tokenize(self) -> list[Token]:
-        avoid_words = ['store', 'and', 'or',
-                       'not', 'if', 'do', 'else', 'elif']
-        keywords = ['if', 'do', 'else', 'elif']
+        avoid_words = ['خزن', 'و', 'أو',
+                       'عكس', 'إذا', 'نفذ', 'غير ذلك', 'غير إذا']
+        keywords = ['إذا', 'نفذ', 'غير ذلك', 'غير إذا']
 
         integer_regex = r'(?<!\.\d*)\d+(?!\d*\.)'
         float_regex = r'\d+\.\d*'
         operationRegex = r'([\(\)+*/-]|(?<!=|<|>)[=](?!=))'
-        declrationRegex = r'store(?=\s+)'
+        declrationRegex = r'خزن(?=\s+)'
         keywordsRegex = fr'({'|'.join(keywords)})'
-        booleanRegex = r'(and|or|not)(?=\s+)'
-        wordsRegex = fr'(?!{'|'.join(avoid_words)})\b[a-zA-Z]+\b'
+        booleanRegex = r'(و|أو|عكس)(?=\s+)'
+        wordsRegex = fr'(?!{'|'.join(avoid_words)
+                            })\b[\u0621-\u064A\u0660-\u0669_]+\b'
         comparisonRegex = r'((>=)|(<=)|(==)|(>)|(<))'
 
         self.extract(re.finditer(

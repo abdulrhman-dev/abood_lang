@@ -67,7 +67,7 @@ class Parser:
     def comparision_expression(self):
         not_comparision = False
 
-        if (self.current_token.value == 'not'):
+        if (self.current_token.value == 'عكس'):
             not_comparision = True
             self.move()
 
@@ -86,7 +86,7 @@ class Parser:
             comparision_expression.right = right_node
 
         if (not_comparision):
-            not_comparision_tree = Node(BooleanOperator('not'))
+            not_comparision_tree = Node(BooleanOperator('عكس'))
             not_comparision_tree.left = comparision_expression
             not_comparision_tree.right = Node(Integer(0))
 
@@ -97,7 +97,7 @@ class Parser:
     def bool_expression(self):
         bool_expression = self.comparision_expression()
 
-        if (self.current_token.value == 'and' or self.current_token.value == 'or'):
+        if (self.current_token.value == 'و' or self.current_token.value == 'أو'):
             left_node = bool_expression
 
             operation = Node(self.current_token)
@@ -121,7 +121,7 @@ class Parser:
         self.move()
         action['do'] = self.statement()
 
-        while (self.current_token.value == 'elif'):
+        while (self.current_token.value == 'غير إذا'):
             sub_action = {'action': 'if'}
             self.move()
             sub_action['expr'] = self.bool_expression()
@@ -130,7 +130,7 @@ class Parser:
 
             action['elif'].append(sub_action)
 
-        if (self.current_token.value == 'else'):
+        if (self.current_token.value == 'غير ذلك'):
             self.move()
             action['else'] = self.statement()
 
@@ -140,7 +140,7 @@ class Parser:
         expression_types = ['integer', 'float',
                             'operation', 'variable', 'boolean_operator']
 
-        if (self.current_token.value == 'if'):
+        if (self.current_token.value == 'إذا'):
             return self.if_statement()
 
         elif (self.current_token.type == 'declaration'):

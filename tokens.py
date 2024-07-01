@@ -53,11 +53,11 @@ class BooleanOperator(Token):
 
     def execute(self, comp1, comp2=None):
         match self.value:
-            case 'and':
+            case 'و':
                 return int(comp1 and comp2)
-            case 'or':
+            case 'أو':
                 return int(comp1 or comp2)
-            case 'not':
+            case 'عكس':
                 return int(not comp1)
 
 
