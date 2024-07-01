@@ -1,2 +1,0 @@
-- store n = n +1 can work
-- prober integer lexer

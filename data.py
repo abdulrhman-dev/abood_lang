@@ -16,14 +16,14 @@ class Data:
         variable_name = token.value
         self.variables[variable_name] = value
 
-    def display(self, data, memory):
+    def display(self, data):
         if isinstance(data, str):
-            from interpreter import Interpreter
+            # from interpreter import Interpreter
 
             if data in self.variables:
-                expression = Interpreter(self.read(data), memory)
+                # expression = Interpreter(self.read(data), memory)
 
-                return expression.interpret()
+                return self.read(data)
 
             raise Exception("Variable doesn't exist")
 

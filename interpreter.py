@@ -13,7 +13,7 @@ class Interpreter:
     def interpret(self):
         if (self.tree.node.value == '='):
             self.memory.assign(
-                self.tree.left.node, self.tree.right)
+                self.tree.left.node, self.evaluate_expression(self.tree.right))
             return
 
         return self.evaluate_expression(self.tree)
@@ -22,7 +22,7 @@ class Interpreter:
         self.expressions = BinaryTree.post_order_traversal(working_tree)
 
         if (len(self.expressions) < 3):
-            return self.memory.display(self.expressions[0].value, self.memory)
+            return self.memory.display(self.expressions[0].value)
         while (len(self.expressions) > 1):
             self.expressions = self.excute_expression()
 
@@ -34,8 +34,8 @@ class Interpreter:
             self.expressions = self.excute_expression()
             self.expressions.appendleft(left_node)
         else:
-            num1 = self.memory.display(self.expressions[0].value, self.memory)
-            num2 = self.memory.display(self.expressions[1].value, self.memory)
+            num1 = self.memory.display(self.expressions[0].value)
+            num2 = self.memory.display(self.expressions[1].value)
             operation: Node = self.expressions[2]
 
             self.expressions.popleft()

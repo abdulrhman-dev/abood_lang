@@ -1,4 +1,4 @@
-import re
+import regex as re
 from collections.abc import Iterable
 from tokens import *
 
@@ -11,7 +11,7 @@ class Lexer:
     def tokenize(self) -> list[Token]:
         declrations = ['store']
 
-        integer_regex = r'(?<!\.)\d+(?!\d*\.)'
+        integer_regex = r'(?<!\.\d*)\d+(?!\d*\.)'
         float_regex = r'\d+\.\d*'
         operationRegex = r'[\(\)+*/=-]'
         declrationRegex = f'({'|'.join(declrations)})'
