@@ -30,7 +30,8 @@ class Interpreter:
         return self.expressions[0].value
 
     def excute_expression(self):
-        if (self.expressions[2].type != 'operation'):
+        allowed_operations = ['operation', 'boolean_operator', 'comparision']
+        if (self.expressions[2].type not in allowed_operations):
             left_node = self.expressions.popleft()
             self.expressions = self.excute_expression()
             self.expressions.appendleft(left_node)

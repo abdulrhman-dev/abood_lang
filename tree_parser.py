@@ -62,7 +62,7 @@ class TreeParser:
         elif (self.current_token.value == '-'):
             self.move()
             unary_root = Node(Operation('*'))
-            unary_root.left = Node(self.current_token)
+            unary_root.left = self.factor()
             unary_root.right = Node(Integer(-1))
             return unary_root
 
@@ -83,7 +83,6 @@ class TreeParser:
             term.right = right_node
 
             self.move()
-
         return term
 
     def expression(self) -> Node:
@@ -126,6 +125,8 @@ class TreeParser:
         if (not_comparision):
             not_comparision_tree = Node(BooleanOperator('not'))
             not_comparision_tree.left = comparision_expression
+            not_comparision_tree.right = Node(Integer(0))
+
             return not_comparision_tree
 
         return comparision_expression

@@ -7,7 +7,7 @@ class Token:
 
     def __repr__(self) -> str:
         # return f'{str(self.value)}'
-        return f'{str(self.value)}->{str(self.type)}'
+        return f'{str(self.value)}>{str(self.type)[:3]}'
 
 
 class Integer(Token):
@@ -53,11 +53,11 @@ class BooleanOperator(Token):
     def execute(self, comp1, comp2=None):
         match self.value:
             case 'and':
-                return comp1 and comp2
+                return int(comp1 and comp2)
             case 'or':
-                return comp1 or comp2
+                return int(comp1 or comp2)
             case 'not':
-                return not comp1
+                return int(not comp1)
 
 
 class Comparision(Token):
@@ -67,12 +67,12 @@ class Comparision(Token):
     def execute(self, num1, num2):
         match self.value:
             case '>':
-                return num1 > num2
+                return int(num1 > num2)
             case '<':
-                return num1 < num2
+                return int(num1 < num2)
             case '==':
-                return num1 == num2
+                return int(num1 == num2)
             case '<=':
-                return num1 <= num2
+                return int(num1 <= num2)
             case '>=':
-                return num1 >= num2
+                return int(num1 >= num2)
