@@ -9,14 +9,17 @@ class Lexer:
         self.exp = exp
 
     def tokenize(self) -> list[Token]:
-        main_keywords = ['store', 'and', 'or', 'not']
+        avoid_words = ['store', 'and', 'or',
+                       'not', 'if', 'do', 'else', 'elif']
+        keywords = ['if', 'do', 'else', 'elif']
 
         integer_regex = r'(?<!\.\d*)\d+(?!\d*\.)'
         float_regex = r'\d+\.\d*'
         operationRegex = r'([\(\)+*/-]|(?<!=|<|>)[=](?!=))'
         declrationRegex = r'store(?=\s+)'
+        keywordsRegex = fr'({'|'.join(keywords)})'
         booleanRegex = r'(and|or|not)(?=\s+)'
-        wordsRegex = fr'(?!{'|'.join(main_keywords)})\b[a-zA-Z]+\b'
+        wordsRegex = fr'(?!{'|'.join(avoid_words)})\b[a-zA-Z]+\b'
         comparisonRegex = r'((>=)|(<=)|(==)|(>)|(<))'
 
         self.extract(re.finditer(
@@ -33,6 +36,8 @@ class Lexer:
             booleanRegex, self.exp), BooleanOperator)
         self.extract(re.finditer(
             comparisonRegex, self.exp), Comparision)
+        self.extract(re.finditer(
+            keywordsRegex, self.exp), Keyword)
 
         self.tokens = sorted(self.tokens, key=lambda t: t.start_index)
 

@@ -1,5 +1,6 @@
 from lexer import Lexer
-from tree_parser import TreeParser, BinaryTree
+from abood_parser import Parser
+from tree import BinaryTree, Node
 from interpreter import Interpreter
 from data import Data
 # while True:
@@ -9,17 +10,19 @@ print("Initilized abood-lang...")
 memory = Data()
 # while True:
 #     exp = input('>')
-lexer = Lexer('5 >= 1 and not 1')
+
+lexer = Lexer('if 5 >= 3 do store n = 4 elif 3 == 3 if 2 == 2 do 2 else 3')
 tokens = lexer.tokenize()
 print(tokens)
-new_parser = TreeParser(tokens)
+new_parser = Parser(tokens)
 
-expressions_tree = new_parser.parse()
+actions = new_parser.parse()
+print(actions)
 # BinaryTree.printTree(expressions_tree)
 
-interpreter = Interpreter(expressions_tree, memory)
+# interpreter = Interpreter(actions, memory)
 
-output = interpreter.interpret()
+# output = interpreter.interpret()
 
-print('Result', output)
-# print(memory.read_all())
+# print('Result', output)
+# # print(memory.read_all())

@@ -76,3 +76,8 @@ class Comparision(Token):
                 return int(num1 <= num2)
             case '>=':
                 return int(num1 >= num2)
+
+
+class Keyword(Token):
+    def __init__(self, value, start_index, end_index):
+        super().__init__(value, 'keyword', start_index, end_index)

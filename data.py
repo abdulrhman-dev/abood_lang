@@ -1,5 +1,5 @@
 from tokens import Variable
-from tree_parser import Node
+from tree import Node
 
 
 class Data:
