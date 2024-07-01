@@ -7,7 +7,8 @@ class Token:
 
     def __repr__(self) -> str:
         # return f'{str(self.value)}'
-        return f'{str(self.value)}>{str(self.type)[:3]}'
+        # return f'{str(self.value)}>{str(self.type)[:3]}'
+        return f'"{str(self.value)}>{str(self.type)[:3]}"'
 
 
 class Integer(Token):

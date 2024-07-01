@@ -1,5 +1,5 @@
 from tokens import Token, Integer, Operation, BooleanOperator
-from collections import deque
+from tree import BinaryTree
 from tree import Node
 
 
@@ -111,11 +111,39 @@ class Parser:
 
         return bool_expression
 
+    def if_statement(self):
+        action = {
+            'action': 'if',
+            'elif': []
+        }
+        self.move()
+        action['expr'] = self.bool_expression()
+        self.move()
+        action['do'] = self.statement()
+
+        while (self.current_token.value == 'elif'):
+            sub_action = {'action': 'if'}
+            self.move()
+            sub_action['expr'] = self.bool_expression()
+            self.move()
+            sub_action['do'] = self.statement()
+
+            action['elif'].append(sub_action)
+
+        if (self.current_token.value == 'else'):
+            self.move()
+            action['else'] = self.statement()
+
+        return action
+
     def statement(self):
         expression_types = ['integer', 'float',
                             'operation', 'variable', 'boolean_operator']
 
-        if (self.current_token.type == 'declaration'):
+        if (self.current_token.value == 'if'):
+            return self.if_statement()
+
+        elif (self.current_token.type == 'declaration'):
             self.move()
             variable_name = self.current_token
             self.move()

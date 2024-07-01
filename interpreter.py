@@ -4,21 +4,41 @@ from tree import BinaryTree, Node
 
 
 class Interpreter:
-    def __init__(self, action: dict, memory: Data) -> None:
-        self.action = action
+    def __init__(self,  memory: Data) -> None:
         self.memory = memory
+        self.output = []
 
-    def interpret(self):
-        if ('action' in self.action):
-            return
-        expression = self.action['expr']
+    def interpret(self, action):
+        if ('action' in action):
+            if (action['action'] == 'if'):
+                return self.interpret_if(action)
+
+        expression = action['expr']
 
         if (expression.node.value == '='):
             self.memory.assign(
                 expression.left.node, self.evaluate_expression(expression.right))
             return
 
-        return self.evaluate_expression(expression)
+        value = self.evaluate_expression(expression)
+        self.output.append(value)
+        return value
+
+    def interpret_if(self, action):
+        if (self.evaluate_expression(action['expr'])):
+            self.interpret(action['do'])
+            return True
+
+        if ('elif' in action):
+            for else_if in action['elif']:
+                condition = self.interpret(else_if)
+                if (condition):
+                    return True
+
+            if ('else' in action):
+                self.interpret(action['else'])
+
+        return False
 
     def evaluate_expression(self, working_tree):
         expressions = BinaryTree.post_order_traversal(working_tree)
