@@ -1,4 +1,4 @@
-from tokens import Token
+from tokens import Token, Integer, Operation, BooleanOperator
 from collections import deque
 
 
@@ -58,46 +58,98 @@ class TreeParser:
             return Node(self.current_token)
         elif (self.current_token.value == '('):
             self.move()
-            return self.expression_tree()
+            return self.expression()
+        elif (self.current_token.value == '-'):
+            self.move()
+            unary_root = Node(Operation('*'))
+            unary_root.left = Node(self.current_token)
+            unary_root.right = Node(Integer(-1))
+            return unary_root
 
-    def term_tree(self) -> Node:
-        term_tree = self.factor()
+    def term(self) -> Node:
+        term = self.factor()
         self.move()
 
         while (self.current_token.value == '*' or self.current_token.value == '/'):
-            left_node = term_tree
+            left_node = term
 
             operation = Node(self.current_token)
 
             self.move()
             right_node = self.factor()
 
-            term_tree = operation
-            term_tree.left = left_node
-            term_tree.right = right_node
+            term = operation
+            term.left = left_node
+            term.right = right_node
 
             self.move()
 
-        return term_tree
+        return term
 
-    def expression_tree(self) -> Node:
-        expression_tree = self.term_tree()
+    def expression(self) -> Node:
+        expression = self.term()
         while (self.current_token.value == '+' or self.current_token.value == '-'):
-            left_node = expression_tree
+            left_node = expression
 
             operation = Node(self.current_token)
             self.move()
 
-            right_node = self.term_tree()
+            right_node = self.term()
 
-            expression_tree = operation
-            expression_tree.left = left_node
-            expression_tree.right = right_node
+            expression = operation
+            expression.left = left_node
+            expression.right = right_node
 
-        return expression_tree
+        return expression
+
+    def comparision_expression(self):
+        not_comparision = False
+
+        if (self.current_token.value == 'not'):
+            not_comparision = True
+            self.move()
+
+        comparision_expression = self.expression()
+
+        if (self.current_token.type == 'comparision'):
+            left_node = comparision_expression
+
+            comparision = Node(self.current_token)
+            self.move()
+
+            right_node = self.expression()
+
+            comparision_expression = comparision
+            comparision_expression.left = left_node
+            comparision_expression.right = right_node
+
+        if (not_comparision):
+            not_comparision_tree = Node(BooleanOperator('not'))
+            not_comparision_tree.left = comparision_expression
+            return not_comparision_tree
+
+        return comparision_expression
+
+    def bool_expression(self):
+        bool_expression = self.comparision_expression()
+
+        if (self.current_token.value == 'and' or self.current_token.value == 'or'):
+            left_node = bool_expression
+
+            operation = Node(self.current_token)
+            self.move()
+
+            right_node = self.comparision_expression()
+
+            bool_expression = operation
+            bool_expression.left = left_node
+            bool_expression.right = right_node
+
+        return bool_expression
 
     def statement(self):
-        expression_types = ['integer', 'float', 'operation', 'variable']
+        expression_types = ['integer', 'float',
+                            'operation', 'variable', 'boolean_operator']
 
         if (self.current_token.type == 'declaration'):
             self.move()
@@ -109,11 +161,11 @@ class TreeParser:
                 statement_tree.left = Node(variable_name)
                 self.move()
 
-                statement_tree.right = self.expression_tree()
+                statement_tree.right = self.bool_expression()
 
                 return statement_tree
         elif self.current_token.type in expression_types:
-            return self.expression_tree()
+            return self.bool_expression()
 
     def parse(self):
         return self.statement()

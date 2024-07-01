@@ -11,6 +11,7 @@ class Interpreter:
         self.memory = memory
 
     def interpret(self):
+
         if (self.tree.node.value == '='):
             self.memory.assign(
                 self.tree.left.node, self.evaluate_expression(self.tree.right))

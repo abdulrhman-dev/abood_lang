@@ -21,7 +21,7 @@ class Float(Token):
 
 
 class Operation(Token):
-    def __init__(self, value, start_index, end_index):
+    def __init__(self, value, start_index=None, end_index=None):
         super().__init__(value, 'operation', start_index, end_index)
 
     def execute(self, num1, num2):
@@ -44,3 +44,35 @@ class Variable(Token):
 class Declaration(Token):
     def __init__(self, value, start_index=None, end_index=None):
         super().__init__(value, 'declaration', start_index, end_index)
+
+
+class BooleanOperator(Token):
+    def __init__(self, value, start_index=None, end_index=None):
+        super().__init__(value, 'boolean_operator', start_index, end_index)
+
+    def execute(self, comp1, comp2=None):
+        match self.value:
+            case 'and':
+                return comp1 and comp2
+            case 'or':
+                return comp1 or comp2
+            case 'not':
+                return not comp1
+
+
+class Comparision(Token):
+    def __init__(self, value, start_index, end_index):
+        super().__init__(value, 'comparision', start_index, end_index)
+
+    def execute(self, num1, num2):
+        match self.value:
+            case '>':
+                return num1 > num2
+            case '<':
+                return num1 < num2
+            case '==':
+                return num1 == num2
+            case '<=':
+                return num1 <= num2
+            case '>=':
+                return num1 >= num2
