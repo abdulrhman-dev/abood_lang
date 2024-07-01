@@ -25,6 +25,6 @@ class Data:
 
                 return self.read(data)
 
-            raise Exception("Variable doesn't exist")
+            raise Exception(f"Variable {str(data)} doesn't exist")
 
         return data
